@@ -1,0 +1,18 @@
+/*
+ * tmag.h --
+ *
+ *	This file contains definitions for the implemention of a
+ *	Tcl interface to the libmagic functions.
+ *
+ * Copyright (c) 2008 Matthias Kraft <matzek@users.sourceforge.net>.
+ *
+ * See the file "license.terms" for information on usage and redistribution
+ * of this file, and for a DISCLAIMER OF ALL WARRANTIES.
+ *
+ */
+
+#define TMAG_EXT_NAME "@PACKAGE_NAME@"
+#define TMAG_EXT_VERSION "@PACKAGE_VERSION@"
+
+/* namespace definition */
+#define TMAG_NS "libmagic"

@@ -1,0 +1,23 @@
+This is a Tcl extension utilising the libmagic to provide scriptlevel access to
+determine the type of a file or buffer.
+
+This package is a freely available open source package.  You can do
+virtually anything you like with it, such as modifying it, redistributing
+it, and selling it either in whole or in part.  See the file
+"license.terms" for complete information.
+
+Building under most UNIX systems is easy, just run the configure script
+and then run make. For more information about the build process, see
+the tcl/unix/README file in the Tcl src dist. The following minimal
+example will install the extension in the /opt/tcl directory.
+
+	$ cd tmag
+	$ ./configure --prefix=/opt/tcl
+	$ make
+	$ make install
+
+The tmag extension code is copyrighted by
+Matthias Kraft <matzek@users.sourceforge.net>.
+
+It is based on Tcl's sampleextension which is copyrighted by
+Scriptics Corporation, ActiveState and others.
