@@ -20,11 +20,36 @@
 /* libmagic::filetype filename
  * see also documentation of fileutil::magic::filetype
  */
-int TmagFileCmd(ClientData data, Tcl_Interp *interp, int objc, Tcl_Obj *CONST objv[]) {
+int TmagTypeCmd(ClientData data, Tcl_Interp *interp, int objc, Tcl_Obj *CONST objv[]) {
     magic_t magic_h;
     const char *result_str, *fname_str;
     Tcl_Obj *result_obj;
     int rc=TCL_OK;
+    const char *options[] = {"-file", "-i", "-h", "-e", "-L", "-p", "-s", "-z", NULL};
+    enum keywordIdx {file, mime, no_dereference, exclude, dereference, preserve_date, special_files, uncompress};
+
+    /* this will take the first argument given to the Tcl level command
+       and compare it with the keywords listed in subCmds.
+       If there is no match, and error is raised and an error message
+       is automatically generated with the word 'action' -> bad action "...": must be start, stop, or rewind
+       If there is a match, the index of the matched item in the arry is assigned to the 'index' variable */
+    int index;
+    if (Tcl_GetIndexFromObj(interp, objv[1], options, "action", 0, &index) != TCL_OK) {
+        return TCL_ERROR;
+    }
+
+    /* now use the enumeration to do your work depending on the keyword */
+    switch (index) {
+            case startIdx: {
+                 /* do the start action */
+            }
+            case stopIdx: {
+                /* do the stop action */
+            }
+            case rewindIdx: {
+                /* do rewind action here */
+            }
+    }
 
     if (objc != 2) {
 	Tcl_WrongNumArgs(interp, 1, objv, "filename");
@@ -34,47 +59,6 @@ int TmagFileCmd(ClientData data, Tcl_Interp *interp, int objc, Tcl_Obj *CONST ob
     fname_str = Tcl_GetString(objv[1]);
 
     if ((magic_h = magic_open(MAGIC_SYMLINK)) == NULL) {
-        result_obj = Tcl_NewStringObj("magic_open() failed: ", -1);
-        Tcl_AppendToObj(result_obj, magic_error(magic_h), -1);
-        Tcl_SetObjResult(interp, result_obj);
-        return TCL_ERROR;
-    }
-    if ((magic_load(magic_h, NULL)) != 0) {
-        result_obj = Tcl_NewStringObj("magic_load() failed: ", -1);
-        Tcl_AppendToObj(result_obj, magic_error(magic_h), -1);
-        Tcl_SetObjResult(interp, result_obj);
-        magic_close(magic_h);
-        return TCL_ERROR;
-    }
-    if ((result_str = magic_file(magic_h, fname_str)) == NULL) {
-        result_obj = Tcl_NewStringObj("magic_file() failed: ", -1);
-        Tcl_AppendToObj(result_obj, magic_error(magic_h), -1);
-        rc = TCL_ERROR;
-    } else {
-        result_obj = Tcl_NewStringObj(result_str, -1);
-    }
-    magic_close(magic_h);
-    Tcl_SetObjResult(interp, result_obj);
-    return rc;
-}
-
-/* libmagic::mimetype filename
- * see also documentation of fileutil::magic::mimetype
- */
-int TmagMimeCmd(ClientData data, Tcl_Interp *interp, int objc, Tcl_Obj *CONST objv[]) {
-    magic_t magic_h;
-    const char *result_str, *fname_str;
-    Tcl_Obj *result_obj;
-    int rc=TCL_OK;
-
-    if (objc != 2) {
-	Tcl_WrongNumArgs(interp, 1, objv, "filename");
-	return TCL_ERROR;
-    }
-
-    fname_str = Tcl_GetString(objv[1]);
-
-    if ((magic_h = magic_open(MAGIC_SYMLINK|MAGIC_MIME)) == NULL) {
         result_obj = Tcl_NewStringObj("magic_open() failed: ", -1);
         Tcl_AppendToObj(result_obj, magic_error(magic_h), -1);
         Tcl_SetObjResult(interp, result_obj);
@@ -115,8 +99,7 @@ int Tmag_Init(Tcl_Interp *interp) {
         return TCL_ERROR;
     }
 
-    Tcl_CreateObjCommand(interp, TMAG_NS "::filetype", TmagFileCmd, NULL, NULL);
-    Tcl_CreateObjCommand(interp, TMAG_NS "::mimetype", TmagMimeCmd, NULL, NULL);
+    Tcl_CreateObjCommand(interp, TMAG_NS "::type", TmagFileCmd, NULL, NULL);
 
     if (Tcl_PkgProvide(interp, TMAG_EXT_NAME, TMAG_EXT_VERSION) == TCL_ERROR) {
         return TCL_ERROR;
