@@ -1,4 +1,4 @@
-/*
+/* --------------------------------------------------------------------------
  * tmag.h --
  *
  *	This file contains definitions for the implemention of a
@@ -8,11 +8,20 @@
  *
  * See the file "license.terms" for information on usage and redistribution
  * of this file, and for a DISCLAIMER OF ALL WARRANTIES.
- *
- */
+ * -------------------------------------------------------------------------- */
 
-#define TMAG_EXT_NAME "@PACKAGE_NAME@"
-#define TMAG_EXT_VERSION "@PACKAGE_VERSION@"
+/* package definition */
+#define TMAG_EXT_NAME		"@PACKAGE_NAME@"
+#define TMAG_EXT_VERSION	"@PACKAGE_VERSION@"
 
 /* namespace definition */
-#define TMAG_NS "libmagic"
+#define TMAG_NS			"libmagic"
+
+/* error message definitions */
+#define TMAG_OPEN_ERROR_MSG	"inititializing new libmagic session failed: "
+#define TMAG_LOAD_ERROR_MSG	"loading the default libmagic database failed: "
+#define TMAG_BUFFER_ERROR_MSG	"buffer type identification failed: "
+#define TMAG_FILE_ERROR_MSG	"file type identification failed: "
+
+#define TMAG_ILL_FLAGS_MSG	"illegal combination of flags: "
+#define TMAG_ILL_FLAGS_RSN	"cannot resolve symlinks on buffer input"
