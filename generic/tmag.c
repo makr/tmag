@@ -32,12 +32,12 @@ void TmagSetErrorResult(Tcl_Interp *interp, const char *message, const char *rea
 }
 
 /* --------------------------------------------------------------------------
- * TmagInit --
+ * TmagSessionInit --
  *
  * Initialize a new libmagic session and load the default database.
  * -------------------------------------------------------------------------- */
 
-magic_t TmagInit(Tcl_Interp *interp, int flags) {
+magic_t TmagSessionInit(Tcl_Interp *interp, int flags) {
   magic_t magic_h;
 
   if ((magic_h = magic_open(MAGIC_ERROR|MAGIC_RAW|flags)) == NULL) {
@@ -62,7 +62,7 @@ magic_t TmagInit(Tcl_Interp *interp, int flags) {
  * -------------------------------------------------------------------------- */
 
 int TmagFileCmd(ClientData data, Tcl_Interp *interp, int objc, Tcl_Obj *CONST objv[]) {
-    magic_t magic_h;
+    tmagData *session = (tmagData *)data;
     const char *result_str, *fname_str=NULL;
     const unsigned char *buffer_ptr=NULL;
     int buffer_len=0, rc=TCL_OK, flag_isbuffer=0, flag_follow=0, magic_flags=0;
@@ -106,26 +106,26 @@ int TmagFileCmd(ClientData data, Tcl_Interp *interp, int objc, Tcl_Obj *CONST ob
       fname_str = Tcl_GetString(objv[1]);
     }
 
-    /* now that we have all required input, init libmagic */
-    if ((magic_h = TmagInit(interp, magic_flags)) == NULL) {
-        return TCL_ERROR;
+    /* now that we have all required input, configure libmagic */
+    if ((magic_setflags(session->magic_h, magic_flags)) < 0) {
+      TmagSetErrorResult(interp, TMAG_FLAGS_ERROR_MSG, magic_error(session->magic_h));
+      return TCL_ERROR;
     }
 
     /* identify content */
     if (flag_isbuffer) {
-      result_str = magic_buffer(magic_h, (const void *)buffer_ptr, buffer_len);
+      result_str = magic_buffer(session->magic_h, (const void *)buffer_ptr, buffer_len);
     } else {
-      result_str = magic_file(magic_h, fname_str);
+      result_str = magic_file(session->magic_h, fname_str);
     }
 
     /* check for error, setup result, close libmagic session */
     if (result_str == NULL) {
-      TmagSetErrorResult(interp, (flag_isbuffer ? TMAG_BUFFER_ERROR_MSG : TMAG_FILE_ERROR_MSG), magic_error(magic_h));
+      TmagSetErrorResult(interp, (flag_isbuffer ? TMAG_BUFFER_ERROR_MSG : TMAG_FILE_ERROR_MSG), magic_error(session->magic_h));
       rc = TCL_ERROR;
     } else {
       Tcl_SetObjResult(interp, Tcl_NewStringObj(result_str, -1));
     }
-    magic_close(magic_h);
     return rc;
 }
 
@@ -140,7 +140,7 @@ int TmagFileCmd(ClientData data, Tcl_Interp *interp, int objc, Tcl_Obj *CONST ob
  * -------------------------------------------------------------------------- */
 
 int TmagMimeCmd(ClientData data, Tcl_Interp *interp, int objc, Tcl_Obj *CONST objv[]) {
-    magic_t magic_h;
+    tmagData *session = (tmagData *)data;
     const char *result_str, *fname_str=NULL;
     const unsigned char *buffer_ptr=NULL;
     int buffer_len=0, rc=TCL_OK, flag_isbuffer=0, flag_follow=0, magic_flags=MAGIC_MIME_TYPE;
@@ -187,26 +187,26 @@ int TmagMimeCmd(ClientData data, Tcl_Interp *interp, int objc, Tcl_Obj *CONST ob
       fname_str = Tcl_GetString(objv[1]);
     }
 
-    /* now that we have all required input, init libmagic */
-    if ((magic_h = TmagInit(interp, magic_flags)) == NULL) {
-        return TCL_ERROR;
+    /* now that we have all required input, configure libmagic */
+    if ((magic_setflags(session->magic_h, magic_flags)) < 0) {
+      TmagSetErrorResult(interp, TMAG_FLAGS_ERROR_MSG, magic_error(session->magic_h));
+      return TCL_ERROR;
     }
 
     /* identify content */
     if (flag_isbuffer) {
-      result_str = magic_buffer(magic_h, (const void *)buffer_ptr, buffer_len);
+      result_str = magic_buffer(session->magic_h, (const void *)buffer_ptr, buffer_len);
     } else {
-      result_str = magic_file(magic_h, fname_str);
+      result_str = magic_file(session->magic_h, fname_str);
     }
 
     /* check for error, setup result, close libmagic session */
     if (result_str == NULL) {
-      TmagSetErrorResult(interp, (flag_isbuffer ? TMAG_BUFFER_ERROR_MSG : TMAG_FILE_ERROR_MSG), magic_error(magic_h));
+      TmagSetErrorResult(interp, (flag_isbuffer ? TMAG_BUFFER_ERROR_MSG : TMAG_FILE_ERROR_MSG), magic_error(session->magic_h));
       rc = TCL_ERROR;
     } else {
       Tcl_SetObjResult(interp, Tcl_NewStringObj(result_str, -1));
     }
-    magic_close(magic_h);
     return rc;
 }
 
@@ -218,23 +218,47 @@ int TmagMimeCmd(ClientData data, Tcl_Interp *interp, int objc, Tcl_Obj *CONST ob
 
 int Tmag_Init(Tcl_Interp *interp) {
     Tcl_Namespace *nsPtr; /* pointer to hold our own new namespace */
+    tmagData *session;
 
     if (Tcl_InitStubs(interp, TCL_VERSION, 0) == NULL) {
         return TCL_ERROR;
     }
 
-    /* create the namespace */
-    if ((nsPtr = Tcl_CreateNamespace(interp, TMAG_NS, NULL, NULL)) == NULL) {
-        return TCL_ERROR;
+    if ((session = (tmagData *)Tcl_Alloc(sizeof(tmagData))) == NULL) {
+      return TCL_ERROR;
     }
 
-    Tcl_CreateObjCommand(interp, TMAG_NS "::filetype", TmagFileCmd, NULL, NULL);
-    Tcl_CreateObjCommand(interp, TMAG_NS "::mimetype", TmagMimeCmd, NULL, NULL);
+    /* now that we have all required input, init libmagic */
+    if ((session->magic_h = TmagSessionInit(interp, 0)) == NULL) {
+      Tcl_Free(session);
+      return TCL_ERROR;
+    }
+
+    /* create the namespace */
+    if ((nsPtr = Tcl_CreateNamespace(interp, TMAG_NS, NULL, NULL)) == NULL) {
+      magic_close(session->magic_h);
+      Tcl_Free(session);
+      return TCL_ERROR;
+    }
+
+    Tcl_CreateObjCommand(interp, TMAG_NS "::filetype", TmagFileCmd, (ClientData)session, NULL);
+    Tcl_CreateObjCommand(interp, TMAG_NS "::mimetype", TmagMimeCmd, (ClientData)session, NULL);
 
     if (Tcl_PkgProvide(interp, TMAG_EXT_NAME, TMAG_EXT_VERSION) == TCL_ERROR) {
+      /* close leaks */
         return TCL_ERROR;
     }
 
     return TCL_OK;
 }
 
+/* close leak:
+ * - magic_close(session->magic_h)
+ * - Tcl_Free(session)
+ */
+#if 10 * TCL_MAJOR_VERSION + TCL_MINOR_VERSION >= 85
+int Tmag_Unload(Tcl_Interp *interp, int flags) {
+  /* how do I get my hands on ClientData now? */
+  /* check Tcl_(G|S)etAssocData() */
+}
+#endif /* Tcl 8.5 */

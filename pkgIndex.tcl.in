@@ -3,5 +3,3 @@
 #
 package ifneeded tmag @PACKAGE_VERSION@ \
     [list load [file join $dir @PKG_LIB_FILE@] @PACKAGE_NAME@]
-
-# [FIXME] consider using namespace ensemble
