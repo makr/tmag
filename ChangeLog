@@ -1,3 +1,17 @@
+2008-12-07  Matthias Kraft  <matzek@users.sourceforge.net>
+
+	README: provisional short documentation
+
+	tests/tmag.test: new file with a couple of test cases
+
+2008-12-06  Matthias Kraft  <matzek@users.sourceforge.net>
+
+	generic/tmag.c generic/tmag.h.in: code cleanup, refactoring,
+	added runtime configuration and buffer type identification.
+
+	configure configure.in: bumped version
+
 2008-11-02  Matthias Kraft  <matzek@users.sourceforge.net>
 
-    *** Imported parts of Tcl's sampleextension and started development of libmagic interface ***
+	*** Imported parts of Tcl's sampleextension and started
+	development of libmagic interface ***

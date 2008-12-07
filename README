@@ -1,23 +1,65 @@
+Introduction
+------------
 This is a Tcl extension utilising the libmagic to provide scriptlevel access to
-determine the type of a file or buffer.
+determine the type of a file or buffer. It either returns a descriptive text or
+the mime type and optionally encoding.
 
-This package is a freely available open source package.  You can do
-virtually anything you like with it, such as modifying it, redistributing
-it, and selling it either in whole or in part.  See the file
-"license.terms" for complete information.
+License
+-------
+The tmag extension code is copyrighted by
+Matthias Kraft <matzek@users.sourceforge.net>.
 
-Building under most UNIX systems is easy, just run the configure script
-and then run make. For more information about the build process, see
-the tcl/unix/README file in the Tcl src dist. The following minimal
-example will install the extension in the /opt/tcl directory.
+It is based on Tcl's sampleextension which is copyrighted by
+Scriptics Corporation, ActiveState and others.
+
+This package is a freely available open source package. You can do virtually
+anything you like with it, such as modifying it, redistributing it, and selling
+it either in whole or in part.
+See the file "license.terms" for complete information.
+
+Building
+--------
+Building under most UNIX systems is easy, just run the configure script and then
+run make. For more information about the build process, see the tcl/unix/README
+file in the Tcl src dist. The following minimal example will install the
+extension in the /opt/tcl directory.
 
 	$ cd tmag
 	$ ./configure --prefix=/opt/tcl
 	$ make
 	$ make install
 
-The tmag extension code is copyrighted by
-Matthias Kraft <matzek@users.sourceforge.net>.
+You will need to have the Tcl development files (headers and tclConfig script)
+installed. Same thing for libmagic, magic.h must be available to the compiler.
 
-It is based on Tcl's sampleextension which is copyrighted by
-Scriptics Corporation, ActiveState and others.
+Usage
+-----
+
+Once built and installed it can be used like this in a script:
+
+    # load extension
+    package require tmag
+
+    # identify a file's type with a human readable discription
+    set description [libmagic::filetype $file]
+
+    # identify a buffer's content returning a machine readable mimetype
+    set mimetype [libmagic::mimetype $buffer -isbuffer]
+
+The prototypes of both commands are:
+
+    libmagic::filetype filename ?(-isbuffer|-follow)? ?-all?
+
+    libmagic::mimetype filename ?(-isbuffer|-follow)? ?-all? ?-with-encoding?
+
+Where 'filename' is either a path to an existing file, or if '-isbuffer' is set
+it is a bytearray with the content to identify. The remaining flags are:
+
+    -follow: if set and the filename points to a symlink, resolve the symlink.
+             Note: -follow and -isbuffer are mutual exclusive.
+
+    -all: if the content can be identified by more than one type, return all,
+          the first match otherwise.
+
+    -with-encoding: append a string identifying the encoding of the content, if
+                    appropriate.
