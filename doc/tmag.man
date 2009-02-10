@@ -1,0 +1,65 @@
+[comment {-*- tcl -*- doctools manpage}]
+[manpage_begin tmag n 0.2]
+
+[moddesc   {libmagic's Tcl binding}]
+[titledesc {Guessing a file's or buffer's data type}]
+[copyright "2009 by Matthias Kraft <M.Kraft@gmx.com>"]
+
+[require Tcl 8.4]
+[require tmag [opt 0.2]]
+[usage [cmd ::libmagic::filetype] [arg filename] [opt [arg "-isbuffer | -follow"]] [opt [arg "-all"]]]
+[usage [cmd ::libmagic::mimetype] [arg filename] [opt [arg "-isbuffer | -follow"]] [opt [arg "-all"]] [opt [arg "-with-encoding"]]]
+
+[description]
+
+This package provides commands for the recognition of a file's or a buffer's
+type using libmagic.
+
+[para]
+
+Return a description of the data type (when called as [cmd ::libmagic::filetype])
+or a mimetype identifier. The result might be the empty string if the data type
+could not be determined. The result might be an error, if libmagic wasn't
+correctly installed, or configured.
+
+[para]
+
+[section PARAMETERS]
+
+[list_begin arguments]
+
+[arg_def "" filename] is either a path to an existing file, or a bytearray
+buffer (see [opt [arg -isbuffer]]).
+
+[list_end]
+
+[list_begin options]
+
+[opt_def -isbuffer] if set, the data provided as [arg filename] will be
+interpreted as bytearray and examined.
+
+[opt_def -follow] if set and the filename points to a symlink, resolve the
+symlink. [emph Note:] [opt [arg -follow]] and [opt [arg -isbuffer]] are mutual
+exclusive!
+
+[opt_def -all] if the content can be identified by more than one type, return
+all, not only the first match.
+
+[opt_def -with-encoding] append a string identifying the encoding of the
+content, if appropriate.
+
+[list_end]
+
+[section REFERENCES]
+
+[list_begin enumerated]
+[enum]
+[uri http://www.darwinsys.com/file/ {Fine Free File Command}]
+
+The site of the open source implementation of the UNIX System's file(1) command.
+
+[list_end]
+
+[see_also filetypes(n) mimetypes(n) file(1) magic(5)]
+[keywords type {libmagic binging} {file utilities} {file type} {file recognition}]
+[manpage_end]

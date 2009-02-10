@@ -62,6 +62,13 @@ TEA_PREFIX
 TEA_SETUP_COMPILER
 
 #-----------------------------------------------------------------------
+# Checking for availability of libmagic and its development files.
+#-----------------------------------------------------------------------
+
+AC_CHECK_LIB(magic, magic_open,,[AC_MSG_ERROR([libmagic is not installed])])
+AC_CHECK_HEADER(magic.h,,[AC_MSG_ERROR([cannot find required magic.h, are the development files for libmagic installed?])])
+
+#-----------------------------------------------------------------------
 # __CHANGE__
 # Specify the C source files to compile in TEA_ADD_SOURCES,
 # public headers that need to be installed in TEA_ADD_HEADERS,
@@ -74,7 +81,7 @@ TEA_SETUP_COMPILER
 TEA_ADD_SOURCES([tmag.c])
 TEA_ADD_HEADERS([])
 TEA_ADD_INCLUDES([])
-TEA_ADD_LIBS([-lmagic])
+TEA_ADD_LIBS([])
 TEA_ADD_CFLAGS([])
 TEA_ADD_STUB_SOURCES([])
 TEA_ADD_TCL_SOURCES([])
