@@ -1,12 +1,13 @@
 [comment {-*- tcl -*- doctools manpage}]
-[manpage_begin tmag n 0.2]
+[vset version "@PACKAGE_VERSION@"]
+[manpage_begin tmag n [vset version]]
 
 [moddesc   {libmagic's Tcl binding}]
-[titledesc {Guessing a file's or buffer's data type}]
-[copyright "2009 by Matthias Kraft <M.Kraft@gmx.com>"]
+[titledesc {Guessing a file's or buffer's data type.}]
+[copyright {2009 by Matthias Kraft <M.Kraft@gmx.com>}]
 
 [require Tcl 8.4]
-[require tmag [opt 0.2]]
+[require tmag [opt [vset version]]]
 [usage [cmd ::libmagic::filetype] [arg filename] [opt [arg "-isbuffer | -follow"]] [opt [arg "-all"]]]
 [usage [cmd ::libmagic::mimetype] [arg filename] [opt [arg "-isbuffer | -follow"]] [opt [arg "-all"]] [opt [arg "-with-encoding"]]]
 
@@ -50,6 +51,41 @@ content, if appropriate.
 
 [list_end]
 
+[section EXAMPLES]
+
+When the current directory is the root directory of the tmag distribution, then
+the following results could be possible with [cmd ::libmagic::filetype] ...
+
+[example_begin]
+% package require tmag
+[vset version]
+% ::libmagic::filetype doc
+directory
+% ::libmagic::filetype README
+ASCII English text
+% ::libmagic::filetype configure.in -all
+Bourne-Again shell script text
+- a
+-  /bin/bash -norc script text
+% ::libmagic::filetype tmag.o
+ELF 64-bit LSB relocatable, x86-64, version 1 (SYSV), not stripped
+[example_end]
+
+Doing the same thing with [cmd ::libmagic::mimetype] ...
+
+[example_begin]
+% package require tmag
+[vset version]
+% ::libmagic::mimetype doc
+application/x-not-regular-file
+% ::libmagic::mimetype README -with-encoding
+text/plain charset=us-ascii
+% ::libmagic::mimetype configure.in -with-encoding
+application/x-shellscript
+% ::libmagic::mimetype tmag.o
+application/x-object
+[example_end]
+
 [section REFERENCES]
 
 [list_begin enumerated]
@@ -61,5 +97,5 @@ The site of the open source implementation of the UNIX System's file(1) command.
 [list_end]
 
 [see_also filetypes(n) mimetypes(n) file(1) magic(5)]
-[keywords type {libmagic binging} {file utilities} {file type} {file recognition}]
+[keywords type {libmagic binding} {file utilities} {file type} {file recognition}]
 [manpage_end]

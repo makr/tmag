@@ -7,7 +7,7 @@ the mime type and optionally encoding.
 License
 -------
 The tmag extension code is copyrighted by
-Matthias Kraft <matzek@users.sourceforge.net>.
+Matthias Kraft <M.Kraft@gmx.com>.
 
 It is based on Tcl's sampleextension which is copyrighted by
 Scriptics Corporation, ActiveState and others.
@@ -25,7 +25,7 @@ file in the Tcl src dist. The following minimal example will install the
 extension in the /opt/tcl directory.
 
 	$ cd tmag
-	$ ./configure --prefix=/opt/tcl
+	$ ./configure --prefix=/opt/tcl --with-tcl=/opt/tcl/lib
 	$ make
 	$ make install
 
@@ -63,3 +63,6 @@ it is a bytearray with the content to identify. The remaining flags are:
 
     -with-encoding: append a string identifying the encoding of the content, if
                     appropriate.
+
+--
+Matthias Kraft

@@ -3,7 +3,7 @@
  *
  *	This file implements a Tcl interface to the libmagic functions.
  *
- * Copyright (c) 2008 Matthias Kraft <matzek@users.sourceforge.net>.
+ * Copyright (c) 2008-2009 Matthias Kraft <M.Kraft@gmx.com>.
  *
  * See the file "license.terms" for information on usage and redistribution
  * of this file, and for a DISCLAIMER OF ALL WARRANTIES.
@@ -91,7 +91,7 @@ int TmagFileCmd(ClientData data, Tcl_Interp *interp, int objc, Tcl_Obj *CONST ob
 	magic_flags |= MAGIC_SYMLINK;
 	break;
       case AllIdx:
-	magic_flags |= MAGIC_CONTINUE;
+	magic_flags |= (MAGIC_CONTINUE|MAGIC_RAW);
 	break;
       }
       objc--;
