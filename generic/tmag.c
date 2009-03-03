@@ -10,6 +10,10 @@
  *
  * -------------------------------------------------------------------------- */
 
+/* string header */
+/*#include <string.h>*/
+/* Standard Library functions */
+/*#include <stdlib.h>*/
 /* libmagic header */
 #include <magic.h>
 /* Tcl header */
@@ -40,7 +44,7 @@ void TmagSetErrorResult(Tcl_Interp *interp, const char *message, const char *rea
 magic_t TmagSessionInit(Tcl_Interp *interp, int flags) {
   magic_t magic_h;
 
-  if ((magic_h = magic_open(MAGIC_ERROR|MAGIC_RAW|flags)) == NULL) {
+  if ((magic_h = magic_open(TMAG_STANDARD_FLAGS|flags)) == NULL) {
     TmagSetErrorResult(interp, TMAG_OPEN_ERROR_MSG, magic_error(magic_h));
 
   } else if ((magic_load(magic_h, NULL)) != 0) {
@@ -65,7 +69,7 @@ int TmagFileCmd(ClientData data, Tcl_Interp *interp, int objc, Tcl_Obj *CONST ob
     tmagData *session = (tmagData *)data;
     const char *result_str, *fname_str=NULL;
     const unsigned char *buffer_ptr=NULL;
-    int buffer_len=0, rc=TCL_OK, flag_isbuffer=0, flag_follow=0, magic_flags=0;
+    int buffer_len=0, rc=TCL_OK, flag_isbuffer=0, flag_follow=0, magic_flags=TMAG_STANDARD_FLAGS;
 
     /* possible flags */
     const char *flags[] = {"-isbuffer", "-follow", "-all", NULL};
@@ -121,7 +125,7 @@ int TmagFileCmd(ClientData data, Tcl_Interp *interp, int objc, Tcl_Obj *CONST ob
 
     /* check for error, setup result, close libmagic session */
     if (result_str == NULL) {
-      TmagSetErrorResult(interp, (flag_isbuffer ? TMAG_BUFFER_ERROR_MSG : TMAG_FILE_ERROR_MSG), magic_error(session->magic_h));
+      TmagSetErrorResult(interp, (flag_isbuffer ? TMAG_BUFFER_ERROR_MSG : TMAG_FILE_ERROR_MSG), magic_error(session->magic_h) );
       rc = TCL_ERROR;
     } else {
       Tcl_SetObjResult(interp, Tcl_NewStringObj(result_str, -1));
@@ -143,7 +147,7 @@ int TmagMimeCmd(ClientData data, Tcl_Interp *interp, int objc, Tcl_Obj *CONST ob
     tmagData *session = (tmagData *)data;
     const char *result_str, *fname_str=NULL;
     const unsigned char *buffer_ptr=NULL;
-    int buffer_len=0, rc=TCL_OK, flag_isbuffer=0, flag_follow=0, magic_flags=MAGIC_MIME_TYPE;
+    int buffer_len=0, rc=TCL_OK, flag_isbuffer=0, flag_follow=0, magic_flags=(TMAG_STANDARD_FLAGS|MAGIC_MIME_TYPE);
 
     /* possible flags */
     const char *flags[] = {"-isbuffer", "-follow", "-all", "-with-encoding", NULL};
@@ -202,7 +206,7 @@ int TmagMimeCmd(ClientData data, Tcl_Interp *interp, int objc, Tcl_Obj *CONST ob
 
     /* check for error, setup result, close libmagic session */
     if (result_str == NULL) {
-      TmagSetErrorResult(interp, (flag_isbuffer ? TMAG_BUFFER_ERROR_MSG : TMAG_FILE_ERROR_MSG), magic_error(session->magic_h));
+      TmagSetErrorResult(interp, (flag_isbuffer ? TMAG_BUFFER_ERROR_MSG : TMAG_FILE_ERROR_MSG), magic_error(session->magic_h) );
       rc = TCL_ERROR;
     } else {
       Tcl_SetObjResult(interp, Tcl_NewStringObj(result_str, -1));

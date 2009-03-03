@@ -4,7 +4,7 @@
 #
 #	This file implements test cases for the libmagic Tcl interface.
 #
-# Copyright (c) 2008 Matthias Kraft <matzek@users.sourceforge.net>.
+# Copyright (c) 2008 Matthias Kraft <M.Kraft@gmx.com>.
 #
 # See the file "license.terms" for information on usage and redistribution
 # of this file, and for a DISCLAIMER OF ALL WARRANTIES.
@@ -63,7 +63,7 @@ test tmag-2.3 {mimetype flags -follow and -isbuffer are mutual exclusive} -body 
 
 test tmag-2.4 {mimetype cannot find nonexistent file} -body {
     ::libmagic::mimetype [file join [pwd] ItBetterDoesNotExist]
-} -returnCodes error -match glob -result {cannot open `*/ItBetterDoesNotExist' (No such file or directory)}
+} -returnCodes 0 -match exact -result {cannot open `*/ItBetterDoesNotExist' (No such file or directory)}
 
 test tmag-2.5 {mimetype identifies empty buffer} -body {
     ::libmagic::mimetype "" -isbuffer
@@ -76,6 +76,12 @@ test tmag-2.6 {mimetype identifies the current script} -body {
 test tmag-2.7 {mimetype identifies the current executable} -body {
     ::libmagic::mimetype [info nameofexecutable] -all -with-encoding
 } -result {application/x-executable}
+
+# data samples
+
+test tmag-3.1 {} -body {
+    ::libmagic::mimetype "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<test><setup arch=\"i686\"/></test>" -isbuffer -all -with-encoding
+} -result {}
 
 # cleanup test environment and write report
 cleanupTests
