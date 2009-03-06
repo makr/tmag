@@ -3,7 +3,7 @@
  *
  *	This file implements a Tcl interface to the libmagic functions.
  *
- * Copyright (c) 2008-2009 Matthias Kraft <M.Kraft@gmx.com>.
+ * Copyright © 2008-2009 Matthias Kraft <M.Kraft@gmx.com>.
  *
  * See the file "license.terms" for information on usage and redistribution
  * of this file, and for a DISCLAIMER OF ALL WARRANTIES.
@@ -14,8 +14,6 @@
 /*#include <string.h>*/
 /* Standard Library functions */
 /*#include <stdlib.h>*/
-/* libmagic header */
-#include <magic.h>
 /* Tcl header */
 #include <tcl.h>
 /* tmag header */
@@ -72,8 +70,8 @@ int TmagFileCmd(ClientData data, Tcl_Interp *interp, int objc, Tcl_Obj *CONST ob
     int buffer_len=0, rc=TCL_OK, flag_isbuffer=0, flag_follow=0, magic_flags=TMAG_STANDARD_FLAGS;
 
     /* possible flags */
-    const char *flags[] = {"-isbuffer", "-follow", "-all", NULL};
-    enum flagsIdx {IsBufferIdx, FollowIdx, AllIdx};
+    const char *flags[] = {"-isbuffer", "-follow", "-all", "-raw", NULL};
+    enum flagsIdx {IsBufferIdx, FollowIdx, AllIdx, RawIdx};
 
     /* check possible range of arguments and process them,
      * note that -isbuffer and -follow are mutual exclusive */
@@ -95,8 +93,10 @@ int TmagFileCmd(ClientData data, Tcl_Interp *interp, int objc, Tcl_Obj *CONST ob
 	magic_flags |= MAGIC_SYMLINK;
 	break;
       case AllIdx:
-	magic_flags |= (MAGIC_CONTINUE|MAGIC_RAW);
+	magic_flags |= MAGIC_CONTINUE;
 	break;
+      case RawIdx:
+	magic_flags |= MAGIC_RAW;
       }
       objc--;
     }

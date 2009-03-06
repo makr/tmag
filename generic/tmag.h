@@ -4,15 +4,21 @@
  *	This file contains definitions for the implemention of a
  *	Tcl interface to the libmagic functions.
  *
- * Copyright (c) 2008 Matthias Kraft <M.Kraft@gmx.com>.
+ * Copyright © 2008-2009 Matthias Kraft <M.Kraft@gmx.com>.
  *
  * See the file "license.terms" for information on usage and redistribution
  * of this file, and for a DISCLAIMER OF ALL WARRANTIES.
  * -------------------------------------------------------------------------- */
 
-/* package definition */
-#define TMAG_EXT_NAME		"@PACKAGE_NAME@"
-#define TMAG_EXT_VERSION	"@PACKAGE_VERSION@"
+#ifndef TMAG_H
+#define TMAG_H
+
+/* libmagic header */
+#include <magic.h>
+
+/* package definition, from -D options*/
+#define TMAG_EXT_NAME		PACKAGE_NAME
+#define TMAG_EXT_VERSION	PACKAGE_VERSION
 
 /* namespace definition */
 #define TMAG_NS			"libmagic"
@@ -32,4 +38,6 @@ typedef struct tmagData {
   magic_t magic_h;
 } tmagData;
 
-#define TMAG_STANDARD_FLAGS	(MAGIC_ERROR|MAGIC_RAW)
+#define TMAG_STANDARD_FLAGS	(MAGIC_ERROR)
+
+#endif /* TMAG_H */

@@ -1,5 +1,5 @@
 [comment {-*- tcl -*- doctools manpage}]
-[vset version "@PACKAGE_VERSION@"]
+[include ./config.man]
 [manpage_begin tmag n [vset version]]
 
 [moddesc   {libmagic's Tcl binding}]
@@ -8,7 +8,7 @@
 
 [require Tcl 8.4]
 [require tmag [opt [vset version]]]
-[usage [cmd ::libmagic::filetype] [arg filename] [opt [arg "-isbuffer | -follow"]] [opt [arg "-all"]]]
+[usage [cmd ::libmagic::filetype] [arg filename] [opt [arg "-isbuffer | -follow"]] [opt [arg "-all"]] [opt [arg "-raw"]]]
 [usage [cmd ::libmagic::mimetype] [arg filename] [opt [arg "-isbuffer | -follow"]] [opt [arg "-all"]] [opt [arg "-with-encoding"]]]
 
 [description]
@@ -46,6 +46,9 @@ exclusive!
 [opt_def -all] if the content can be identified by more than one type, return
 all, not only the first match.
 
+[opt_def -raw] do not escape non-printable (e. g. a new-line character)
+characters in the result text.
+
 [opt_def -with-encoding] append a string identifying the encoding of the
 content, if appropriate.
 
@@ -63,7 +66,7 @@ the following results could be possible with [cmd ::libmagic::filetype] ...
 directory
 % ::libmagic::filetype README
 ASCII English text
-% ::libmagic::filetype configure.in -all
+% ::libmagic::filetype configure.in -all -raw
 Bourne-Again shell script text
 - a
 -  /bin/bash -norc script text

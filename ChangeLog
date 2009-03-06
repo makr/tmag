@@ -1,3 +1,16 @@
+2009-03-06  Matthias Kraft  <M.Kraft@gmx.com>
+
+	configure configure.in Makefile.in README config.man.in
+	doc/tmag.man generic/tmag.c generic/tmag.h: made raw output mode
+	configurable; now generating and deploying HTML documentation,
+	too; changed the ways how the version information is creeping into
+	the results;
+
+	tests/tmag.test tests/pwrdLogo75.{gif,jpg,png,ppm,xpm}
+	tests/test.{pdf,ps}: added more test cases with some real data.
+
+	configure configure.in: bumped version to 0.4
+
 2009-02-14  Matthias Kraft  <M.Kraft@gmx.com>
 
 	doc/tmag.man.in: documentation in doctools format

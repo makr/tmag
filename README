@@ -26,7 +26,9 @@ file in the Tcl src dist. The following minimal example will install the
 extension in the /opt/tcl directory.
 
 	$ cd tmag
-	$ ./configure --prefix=/opt/tcl --with-tcl=/opt/tcl/lib
+	$ mkdir build
+	$ cd build
+	$ ../configure --prefix=/opt/tcl --with-tcl=/opt/tcl/lib
 	$ make
 	$ make install
 
@@ -49,7 +51,7 @@ Once built and installed it can be used like this in a script:
 
 The prototypes of both commands are:
 
-    libmagic::filetype filename ?(-isbuffer|-follow)? ?-all?
+    libmagic::filetype filename ?(-isbuffer|-follow)? ?-all? ?-raw?
 
     libmagic::mimetype filename ?(-isbuffer|-follow)? ?-all? ?-with-encoding?
 
@@ -61,6 +63,8 @@ it is a bytearray with the content to identify. The remaining flags are:
 
     -all: if the content can be identified by more than one type, return all,
           the first match otherwise.
+
+    -raw: do not escape non-printable characters in result text
 
     -with-encoding: append a string identifying the encoding of the content, if
                     appropriate.
