@@ -19,7 +19,7 @@ dnl	to configure the system for the local environment.
 # so you can encode the package version directly into the source files.
 #-----------------------------------------------------------------------
 
-AC_INIT([tmag], [0.4], [M.Kraft@gmx.com])
+AC_INIT([tmag], [0.5], [M.Kraft@gmx.com])
 
 #--------------------------------------------------------------------
 # Call TEA_INIT as the first TEA_ macro to set up initial vars.
@@ -65,8 +65,25 @@ TEA_SETUP_COMPILER
 # Checking for availability of libmagic and its development files.
 #-----------------------------------------------------------------------
 
+AC_ARG_WITH([magic],
+  [AS_HELP_STRING([--with-magic=DIR],[use libmagic installed in DIR])],
+  [case "x$withval" in
+    xno)
+      AC_MSG_ERROR([There no way to go without libmagic!])
+      ;;
+    xyes|x)
+      ;;
+    *)
+      magic_lib="-L\"$withval\""
+      magic_inc="-I\"`dirname "$withval"`/include\""
+      ;;
+  esac])
+
+_CFLAGS="$CFLAGS"
+CFLAGS="$CFLAGS $magic_inc $magic_lib"
 AC_CHECK_LIB(magic, magic_open,,[AC_MSG_ERROR([libmagic is not installed])])
 AC_CHECK_HEADER(magic.h,,[AC_MSG_ERROR([cannot find required magic.h, are the development files for libmagic installed?])])
+CFLAGS="$_CFLAGS"
 
 #-----------------------------------------------------------------------
 # __CHANGE__
@@ -80,8 +97,8 @@ AC_CHECK_HEADER(magic.h,,[AC_MSG_ERROR([cannot find required magic.h, are the de
 
 TEA_ADD_SOURCES([tmag.c])
 TEA_ADD_HEADERS([])
-TEA_ADD_INCLUDES([])
-TEA_ADD_LIBS([])
+TEA_ADD_INCLUDES([$magic_inc])
+TEA_ADD_LIBS([$magic_lib])
 TEA_ADD_CFLAGS([])
 TEA_ADD_STUB_SOURCES([])
 TEA_ADD_TCL_SOURCES([])
@@ -114,6 +131,7 @@ else
     #TEA_ADD_SOURCES([unix/unixFile.c])
     #TEA_ADD_LIBS([-lsuperfly])
 fi
+CLEANFILES="$CLEANFILES doc/*"
 AC_SUBST(CLEANFILES)
 
 #--------------------------------------------------------------------
@@ -193,7 +211,21 @@ TEA_PROG_TCLSH
 # Look for dtplite to process the man page with.
 #--------------------------------------------------------------------
 
-AC_PATH_PROG(DTPLITE, dtplite, [:])
+AC_ARG_WITH([dtplite],
+  [AS_HELP_STRING([--with-dtplite=DIR],[use dtplite installed in DIR])],
+  [case "x$withval" in
+    xno)
+      AC_MSG_WARN([dtplite is required to generate documentation!])
+      DTPLITE=:
+      ;;
+    xyes|x)
+      AC_PATH_PROG(DTPLITE, dtplite, [:])
+      ;;
+    *)
+      DTPLITE="\"$withval\""
+      AC_MSG_NOTICE([Expecting dtplite in $DTPLITE.])
+      ;;
+  esac], [AC_PATH_PROG(DTPLITE, dtplite, [:])])
 AC_SUBST(DTPLITE)
 
 #--------------------------------------------------------------------

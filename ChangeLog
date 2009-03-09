@@ -1,3 +1,10 @@
+2009-03-09  Matthias Kraft  <M.Kraft@gmx.com>
+
+	configure configure.in Makefile.in: bumped version to 0.5; added
+	--with-magic and --with-dtplite configure options; fixed Makefile
+	to htmldir for HTML documentation, to install README and license,
+	and to remove certain files
+
 2009-03-06  Matthias Kraft  <M.Kraft@gmx.com>
 
 	configure configure.in Makefile.in README config.man.in

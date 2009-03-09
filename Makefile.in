@@ -22,6 +22,8 @@
 DTPLITE		= @DTPLITE@
 DTSCRIPTS	= @DTSCRIPTS@
 docdir		= @docdir@
+htmldir		= @htmldir@
+STDDOCS		= README license.terms
 
 #========================================================================
 # Nothing of the variables below this line should need to be changed.
@@ -159,7 +161,7 @@ PKG_CFLAGS	= @PKG_CFLAGS@
 DEFS		= @DEFS@ $(PKG_CFLAGS)
 
 # Move pkgIndex.tcl to 'BINARIES' var if it is generated in the Makefile
-CONFIG_CLEAN_FILES = Makefile pkgIndex.tcl
+CONFIG_CLEAN_FILES = Makefile pkgIndex.tcl config.man
 CLEANFILES	= @CLEANFILES@
 
 CPPFLAGS	= @CPPFLAGS@
@@ -237,11 +239,20 @@ install-libraries: libraries
 # directory.
 #========================================================================
 
-install-doc: install-nroff install-html
+install-doc: install-nroff install-html install-std
+
+install-std:
+	@mkdir -p $(DESTDIR)$(docdir)
+	@echo "Installing documentation files in $(DESTDIR)$(docdir)"
+	@for i in $(STDDOCS); do \
+	    echo "Installing $$i"; \
+	    rm -f $(DESTDIR)$(docdir)/$$i; \
+	    $(INSTALL_DATA) $(srcdir)/$$i $(DESTDIR)$(docdir) ; \
+	done
 
 install-nroff: doc-nroff
 	@mkdir -p $(DESTDIR)$(mandir)/mann
-	@echo "Installing documentation in $(DESTDIR)$(mandir)"
+	@echo "Installing man pages in $(DESTDIR)$(mandir)"
 	@list='$(top_builddir)/doc/*.n'; for i in $$list; do \
 	    echo "Installing $$i"; \
 	    rm -f $(DESTDIR)$(mandir)/mann/`basename $$i`; \
@@ -249,12 +260,12 @@ install-nroff: doc-nroff
 	done
 
 install-html: doc-html
-	@mkdir -p $(DESTDIR)$(docdir)
-	@echo "Installing documentation in $(DESTDIR)$(docdir)"
+	@mkdir -p $(DESTDIR)$(htmldir)
+	@echo "Installing HTML documentation in $(DESTDIR)$(htmldir)"
 	@list='$(top_builddir)/doc/*.html'; for i in $$list; do \
 	    echo "Installing $$i"; \
-	    rm -f $(DESTDIR)$(docdir)/`basename $$i`; \
-	    $(INSTALL_DATA) $$i $(DESTDIR)$(docdir) ; \
+	    rm -f $(DESTDIR)$(htmldir)/`basename $$i`; \
+	    $(INSTALL_DATA) $$i $(DESTDIR)$(htmldir) ; \
 	done
 
 test: binaries libraries
