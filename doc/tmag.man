@@ -80,11 +80,11 @@ Doing the same thing with [cmd ::libmagic::mimetype] ...
 % package require tmag
 [vset version]
 % ::libmagic::mimetype doc
-application/x-not-regular-file
+application/x-directory
 % ::libmagic::mimetype README -with-encoding
-text/plain charset=us-ascii
+text/plain; charset=us-ascii
 % ::libmagic::mimetype configure.in -with-encoding
-application/x-shellscript
+text/x-shellscript; charset=us-ascii
 % ::libmagic::mimetype tmag.o
 application/x-object
 [example_end]

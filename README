@@ -66,8 +66,8 @@ it is a bytearray with the content to identify. The remaining flags are:
 
     -raw: do not escape non-printable characters in result text
 
-    -with-encoding: append a string identifying the encoding of the content, if
-                    appropriate.
+    -with-encoding: append a semi-colon and a string identifying the encoding
+                    of the content.
 
 --
 Matthias Kraft

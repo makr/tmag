@@ -1,3 +1,11 @@
+2009-03-21  Matthias Kraft  <M.Kraft@gmx.com>
+
+	README doc/tmag.man tests/tmag.test: adapted tests and
+	documentation to changed output of file-5.00 release.
+
+	generic/tmag.c tests/tmag.test: fixed bug in reporting of system
+	errors.
+
 2009-03-20  Matthias Kraft  <M.Kraft@gmx.com>
 
 	configure configure.in Makefile.in pkgIndex.tcl.in tclconfig/*:
