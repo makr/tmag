@@ -1,28 +1,32 @@
-/* --------------------------------------------------------------------------
- * tmag.c --
- *
- *	This file implements a Tcl interface to the libmagic functions.
- *
- * Copyright © 2008-2009 Matthias Kraft <M.Kraft@gmx.com>.
- *
- * See the file "license.terms" for information on usage and redistribution
- * of this file, and for a DISCLAIMER OF ALL WARRANTIES.
- *
- * -------------------------------------------------------------------------- */
+# --------------------------------------------------------------------------
+# -- tmag.tcl
+#
+#	This file implements a Tcl interface to the libmagic functions.
+#
+# Copyright © 2008-2009 Matthias Kraft <M.Kraft@gmx.com>.
+#
+# See the file "license.terms" for information on usage and redistribution
+# of this file, and for a DISCLAIMER OF ALL WARRANTIES.
+#
+# --------------------------------------------------------------------------
 
-/* string header */
+package require critcl
+
+# Header files: string header, Tcl header, tmag header
+# FIXME: Tcl header required? better use critcl::cheaders for tmag.h?
+::critcl::ccode {
 #include <string.h>
-/* Tcl header */
 #include <tcl.h>
-/* tmag header */
 #include "tmag.h"
+}
 
-/* --------------------------------------------------------------------------
- * TmagSetErrorResult --
- *
- * Create Tcl objects from strings and set them as interp result.
- * -------------------------------------------------------------------------- */
+# --------------------------------------------------------------------------
+# TmagSetErrorResult --
+#
+# Create Tcl objects from strings and set them as interp result.
+# --------------------------------------------------------------------------
 
+::critcl::ccode {
 void TmagSetErrorResult(Tcl_Interp *interp, const char *message, const char *reason) {
   Tcl_Obj *result_obj;
 
@@ -30,13 +34,15 @@ void TmagSetErrorResult(Tcl_Interp *interp, const char *message, const char *rea
   Tcl_AppendToObj(result_obj, reason, -1);
   Tcl_SetObjResult(interp, result_obj);
 }
+}
 
-/* --------------------------------------------------------------------------
- * TmagSessionInit --
- *
- * Initialize a new libmagic session and load the default database.
- * -------------------------------------------------------------------------- */
+# --------------------------------------------------------------------------
+# TmagSessionInit --
+#
+# Initialize a new libmagic session and load the default database.
+# --------------------------------------------------------------------------
 
+::critcl::ccode {
 magic_t TmagSessionInit(Tcl_Interp *interp, int flags) {
   magic_t magic_h;
 
@@ -51,16 +57,19 @@ magic_t TmagSessionInit(Tcl_Interp *interp, int flags) {
 
   return magic_h;
 }
+}
 
-/* --------------------------------------------------------------------------
- * TmagFileCmd --
- *
- * Implements Tcl command
- * libmagic::filetype filename ?(-isbuffer|-follow)? ?-all?
- *
- * Returns result string from libmagic or an error.
- * -------------------------------------------------------------------------- */
+# --------------------------------------------------------------------------
+# TmagFileCmd --
+#
+# Implements Tcl command
+# libmagic::filetype filename ?(-isbuffer|-follow)? ?-all?
+#
+# Returns result string from libmagic or an error.
+# --------------------------------------------------------------------------
+# FIXME: change to ::critcl::cproc!
 
+::critcl::ccode {
 int TmagFileCmd(ClientData data, Tcl_Interp *interp, int objc, Tcl_Obj *CONST objv[]) {
     tmagData *session = (tmagData *)data;
     const char *result_str;
@@ -136,17 +145,19 @@ int TmagFileCmd(ClientData data, Tcl_Interp *interp, int objc, Tcl_Obj *CONST ob
     }
     return rc;
 }
+}
 
-/* --------------------------------------------------------------------------
- * TmagMimeCmd --
- *
- * Implements Tcl command
- * libmagic::mimetype filename ?(-isbuffer|-follow)? ?-all? ?-with-encoding?
- *
- * Returns the mime type as result string, with a string identifying the
- * encoding optionally appended. May return an error.
- * -------------------------------------------------------------------------- */
-
+# --------------------------------------------------------------------------
+# TmagMimeCmd --
+#
+# Implements Tcl command
+# libmagic::mimetype filename ?(-isbuffer|-follow)? ?-all? ?-with-encoding?
+#
+# Returns the mime type as result string, with a string identifying the
+# encoding optionally appended. May return an error.
+# --------------------------------------------------------------------------
+# FIXME: change to critcl::cproc!
+::critcl::ccode {
 int TmagMimeCmd(ClientData data, Tcl_Interp *interp, int objc, Tcl_Obj *CONST objv[]) {
     tmagData *session = (tmagData *)data;
     const char *result_str;
@@ -223,13 +234,15 @@ int TmagMimeCmd(ClientData data, Tcl_Interp *interp, int objc, Tcl_Obj *CONST ob
     }
     return rc;
 }
+}
 
-/* --------------------------------------------------------------------------
- * Tmag_Init --
- *
- * Register namespace, commands, and package with the Tcl interpreter.
- * -------------------------------------------------------------------------- */
-
+# --------------------------------------------------------------------------
+# Tmag_Init --
+#
+# Register namespace, commands, and package with the Tcl interpreter.
+# --------------------------------------------------------------------------
+# FIXME: put into critcl::cinit?
+::critcl::ccode {
 int Tmag_Init(Tcl_Interp *interp) {
     Tcl_Namespace *nsPtr; /* pointer to hold our own new namespace */
     tmagData *session;
@@ -265,14 +278,18 @@ int Tmag_Init(Tcl_Interp *interp) {
 
     return TCL_OK;
 }
+}
 
-/* close leak:
- * - magic_close(session->magic_h)
- * - Tcl_Free(session)
- */
+# close leak:
+# - magic_close(session->magic_h)
+# - Tcl_Free(session)
+# FIXME: how to handle the unload stuff with critcl?
+
+::critcl::ccode {
 #if 10 * TCL_MAJOR_VERSION + TCL_MINOR_VERSION >= 85
 int Tmag_Unload(Tcl_Interp *interp, int flags) {
   /* how do I get my hands on ClientData now? */
   /* check Tcl_(G|S)etAssocData() */
 }
 #endif /* Tcl 8.5 */
+}
