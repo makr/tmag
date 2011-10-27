@@ -24,7 +24,7 @@
 #define TMAG_NS			"libmagic"
 
 /* error message definitions */
-#define TMAG_OPEN_ERROR_MSG	"inititializing new libmagic session failed: "
+#define TMAG_OPEN_ERROR_MSG	"initializing new libmagic session failed: "
 #define TMAG_LOAD_ERROR_MSG	"loading the default libmagic database failed: "
 #define TMAG_BUFFER_ERROR_MSG	"buffer type identification failed: "
 #define TMAG_FILE_ERROR_MSG	"file type identification failed: "
