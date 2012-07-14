@@ -69,7 +69,7 @@ int TmagFileCmd(ClientData data, Tcl_Interp *interp, int objc, Tcl_Obj *CONST ob
     int buffer_len=0, rc=TCL_OK, flag_isbuffer=0, flag_follow=0, magic_flags=TMAG_STANDARD_FLAGS;
 
     /* possible flags */
-    const char *flags[] = {"-isbuffer", "-follow", "-all", "-raw", NULL};
+    static const char *flags[] = {"-isbuffer", "-follow", "-all", "-raw", NULL};
     enum flagsIdx {IsBufferIdx, FollowIdx, AllIdx, RawIdx};
 
     /* check possible range of arguments and process them,
@@ -96,6 +96,7 @@ int TmagFileCmd(ClientData data, Tcl_Interp *interp, int objc, Tcl_Obj *CONST ob
 	break;
       case RawIdx:
 	magic_flags |= MAGIC_RAW;
+	break;
       }
       objc--;
     }
@@ -155,7 +156,7 @@ int TmagMimeCmd(ClientData data, Tcl_Interp *interp, int objc, Tcl_Obj *CONST ob
     int buffer_len=0, rc=TCL_OK, flag_isbuffer=0, flag_follow=0, magic_flags=(TMAG_STANDARD_FLAGS|MAGIC_MIME_TYPE);
 
     /* possible flags */
-    const char *flags[] = {"-isbuffer", "-follow", "-all", "-with-encoding", NULL};
+    static const char *flags[] = {"-isbuffer", "-follow", "-all", "-with-encoding", NULL};
     enum flagsIdx {IsBufferIdx, FollowIdx, AllIdx, WithEncodingIdx};
 
     /* check possible range of arguments and process them,
