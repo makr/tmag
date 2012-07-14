@@ -3,7 +3,7 @@
  *
  *	This file implements a Tcl interface to the libmagic functions.
  *
- * Copyright © 2008-2009 Matthias Kraft <M.Kraft@gmx.com>.
+ * Copyright © 2008-2012 Matthias Kraft <M.Kraft@gmx.com>.
  *
  * See the file "license.terms" for information on usage and redistribution
  * of this file, and for a DISCLAIMER OF ALL WARRANTIES.
@@ -245,14 +245,14 @@ int Tmag_Init(Tcl_Interp *interp) {
 
     /* now that we have all required input, init libmagic */
     if ((session->magic_h = TmagSessionInit(interp, 0)) == NULL) {
-      Tcl_Free(session);
+      Tcl_Free((char *)session);
       return TCL_ERROR;
     }
 
     /* create the namespace */
     if ((nsPtr = Tcl_CreateNamespace(interp, TMAG_NS, NULL, NULL)) == NULL) {
       magic_close(session->magic_h);
-      Tcl_Free(session);
+      Tcl_Free((char *)session);
       return TCL_ERROR;
     }
 
@@ -267,13 +267,16 @@ int Tmag_Init(Tcl_Interp *interp) {
     return TCL_OK;
 }
 
-/* close leak:
+/* TODO: close leaks:
  * - magic_close(session->magic_h)
  * - Tcl_Free(session)
  */
 #if 10 * TCL_MAJOR_VERSION + TCL_MINOR_VERSION >= 85
 int Tmag_Unload(Tcl_Interp *interp, int flags) {
-  /* how do I get my hands on ClientData now? */
+  /* TODO: how do I get my hands on ClientData now? */
   /* check Tcl_(G|S)etAssocData() */
+  TmagSetErrorResult(interp, TMAG_EXT_NAME, TMAG_UNLOAD_ERROR_MSG);
+  return TCL_ERROR;
 }
+
 #endif /* Tcl 8.5 */

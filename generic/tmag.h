@@ -4,7 +4,7 @@
  *	This file contains definitions for the implemention of a
  *	Tcl interface to the libmagic functions.
  *
- * Copyright © 2008-2009 Matthias Kraft <M.Kraft@gmx.com>.
+ * Copyright © 2008-2012 Matthias Kraft <M.Kraft@gmx.com>.
  *
  * See the file "license.terms" for information on usage and redistribution
  * of this file, and for a DISCLAIMER OF ALL WARRANTIES.
@@ -29,6 +29,7 @@
 #define TMAG_BUFFER_ERROR_MSG	"buffer type identification failed: "
 #define TMAG_FILE_ERROR_MSG	"file type identification failed: "
 #define TMAG_FLAGS_ERROR_MSG	"configuring libmagic query: "
+#define TMAG_UNLOAD_ERROR_MSG	" unload is not supported"
 
 #define TMAG_ILL_FLAGS_MSG	"illegal combination of flags: "
 #define TMAG_ILL_FLAGS_RSN	"cannot resolve symlinks on buffer input"

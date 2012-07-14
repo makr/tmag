@@ -1,3 +1,16 @@
+2012-07-14  Matthias Kraft  <M.Kraft@gmx.com>
+
+	generic/tmag.c: Fixed violation of T_GIFO contract. Thanks go to
+	Andreas Kupries for the patch and Brian Griffin for raising the awareness.
+	Also closing a case statement properly now and fixing a couple of compiler
+	warnings. Gives a proper error message for an unload attempt.
+
+	configure configure.in: Fixed removing source of man page, if built in root
+	dir. Bumped patchlevel. Regenerated using newer autoconfig.
+
+	tests/tmag.test: Updated a couple of test cases to follow recent fixes and
+	changes of libmagic output. Tested against file-5.11 package.
+
 2009-03-21  Matthias Kraft  <M.Kraft@gmx.com>
 
 	README doc/tmag.man tests/tmag.test: adapted tests and
